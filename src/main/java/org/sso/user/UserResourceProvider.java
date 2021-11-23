@@ -1,6 +1,5 @@
 package org.sso.user;
 
-import org.apache.log4j.Logger;
 import org.jboss.resteasy.annotations.cache.NoCache;
 import org.keycloak.common.util.Time;
 import org.keycloak.connections.jpa.JpaConnectionProvider;
@@ -17,7 +16,6 @@ import javax.ws.rs.*;
 
 
 public class UserResourceProvider implements RealmResourceProvider {
-    private static final Logger logger = Logger.getLogger(UserResourceProvider.class);
     private final KeycloakSession session;
     private final RealmModel realm;
     private final AuthenticationManager.AuthResult auth;
@@ -71,13 +69,11 @@ public class UserResourceProvider implements RealmResourceProvider {
                            @FormParam("oldPassword")String oldPassword,
                            @FormParam("newPassword")String newPassword){
         checkRealmAdmin();
-        logger.info("param->userId:"+userId+";old:"+oldPassword+";new:"+newPassword);
         UserCredentialModel userCredentialModel = UserCredentialModel.password(oldPassword);
         UserProvider userProvider = session.getProvider(UserProvider.class);
         PasswordCredentialProvider passwordCredentialProvider = new PasswordCredentialProvider(session);
         UserModel user = userProvider.getUserById(realm,userId);
         if(session.userCredentialManager().isValid(realm,user,userCredentialModel)){
-            logger.info("valid ok and set new!");
             PasswordCredentialModel newModel =  createCredential(realm,newPassword );
             passwordCredentialProvider.createCredential(realm,user,newModel);
         }else{

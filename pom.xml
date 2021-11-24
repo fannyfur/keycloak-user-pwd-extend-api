@@ -54,6 +54,13 @@
       <scope>compile</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.keycloak</groupId>
+      <artifactId>keycloak-model-infinispan</artifactId>
+      <version>${version.keycloak}</version>
+      <scope>compile</scope>
+    </dependency>
+
   </dependencies>
 
   <build>
@@ -100,7 +107,7 @@
         <configuration>
           <archive>
             <manifestEntries>
-              <dependencies>org.keycloak.keycloak-services org.keycloak.keycloak-model-jpa
+              <dependencies>org.keycloak.keycloak-services org.keycloak.keycloak-model-jpa org.keycloak.keycloak-model-infinispan
               </dependencies>
 
             </manifestEntries>

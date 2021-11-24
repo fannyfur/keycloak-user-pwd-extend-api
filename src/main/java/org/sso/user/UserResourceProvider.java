@@ -52,7 +52,6 @@ public class UserResourceProvider implements RealmResourceProvider {
 
 
 
-
     // /auth/realms/buzz-sso/user-extend-api-credential/user-reset-pwd
     /**
      *  user reset password by raw password and new password
@@ -69,6 +68,9 @@ public class UserResourceProvider implements RealmResourceProvider {
                            @FormParam("oldPassword")String oldPassword,
                            @FormParam("newPassword")String newPassword){
         checkRealmAdmin();
+
+
+
         UserCredentialModel userCredentialModel = UserCredentialModel.password(oldPassword);
         UserProvider userProvider = session.getProvider(UserProvider.class);
         PasswordCredentialProvider passwordCredentialProvider = new PasswordCredentialProvider(session);

@@ -33,6 +33,8 @@ mvn clean package
      provider.getCache(InfinispanConnectionProvider.USER_CACHE_NAME).put("","");
      //cache level for keys
      provider.getCache(InfinispanConnectionProvider.KEYS_CACHE_NAME).put("","");
+     //cache level for session
+     provider.getCache(InfinispanConnectionProvider.USER_SESSION_CACHE_NAME).put("","");
      //remote cache : 
      provider.getRemoteCache()
 ```

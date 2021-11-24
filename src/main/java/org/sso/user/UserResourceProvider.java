@@ -2,6 +2,7 @@ package org.sso.user;
 
 import org.jboss.resteasy.annotations.cache.NoCache;
 import org.keycloak.common.util.Time;
+import org.keycloak.connections.infinispan.InfinispanConnectionProvider;
 import org.keycloak.connections.jpa.JpaConnectionProvider;
 import org.keycloak.credential.*;
 import org.keycloak.credential.hash.PasswordHashProvider;
@@ -68,9 +69,6 @@ public class UserResourceProvider implements RealmResourceProvider {
                            @FormParam("oldPassword")String oldPassword,
                            @FormParam("newPassword")String newPassword){
         checkRealmAdmin();
-
-
-
         UserCredentialModel userCredentialModel = UserCredentialModel.password(oldPassword);
         UserProvider userProvider = session.getProvider(UserProvider.class);
         PasswordCredentialProvider passwordCredentialProvider = new PasswordCredentialProvider(session);

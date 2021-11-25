@@ -2,7 +2,6 @@ package org.sso.user;
 
 import org.jboss.resteasy.annotations.cache.NoCache;
 import org.keycloak.common.util.Time;
-import org.keycloak.connections.infinispan.InfinispanConnectionProvider;
 import org.keycloak.connections.jpa.JpaConnectionProvider;
 import org.keycloak.credential.*;
 import org.keycloak.credential.hash.PasswordHashProvider;
@@ -20,7 +19,8 @@ public class UserResourceProvider implements RealmResourceProvider {
     private final KeycloakSession session;
     private final RealmModel realm;
     private final AuthenticationManager.AuthResult auth;
-    private final  EntityManager em;
+    private final EntityManager em;
+    private final String PASSWORD_HASH_PROVIDER_ID = "pbkdf2-sha256";
 
     public UserResourceProvider(KeycloakSession session) {
         this.session = session;
@@ -30,18 +30,18 @@ public class UserResourceProvider implements RealmResourceProvider {
     }
 
 
-    protected PasswordHashProvider getHashProvider(PasswordPolicy policy) {
-        PasswordHashProvider hash = this.session.getProvider(PasswordHashProvider.class, policy.getHashAlgorithm());
+    private PasswordHashProvider getHashProvider(PasswordPolicy policy) {
+        PasswordHashProvider hash = session.getProvider(PasswordHashProvider.class, policy.getHashAlgorithm());
         if (hash == null) {
-            return this.session.getProvider(PasswordHashProvider.class, "pbkdf2-sha256");
+            return session.getProvider(PasswordHashProvider.class, PASSWORD_HASH_PROVIDER_ID);
         } else {
             return hash;
         }
     }
 
-    public PasswordCredentialModel createCredential(RealmModel realm,String password) {
+    private PasswordCredentialModel createCredential(RealmModel realm,String password) {
         PasswordPolicy policy = realm.getPasswordPolicy();
-        PasswordHashProvider hash = this.getHashProvider(policy);
+        PasswordHashProvider hash = getHashProvider(policy);
         if (hash == null) {
             return null;
         } else {

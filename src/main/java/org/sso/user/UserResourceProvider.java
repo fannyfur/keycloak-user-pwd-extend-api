@@ -7,12 +7,15 @@ import org.keycloak.credential.*;
 import org.keycloak.credential.hash.PasswordHashProvider;
 import org.keycloak.models.*;
 import org.keycloak.models.credential.PasswordCredentialModel;
+import org.keycloak.representations.idm.UserRepresentation;
 import org.keycloak.services.managers.AppAuthManager;
 import org.keycloak.services.managers.AuthenticationManager;
 import org.keycloak.services.resource.RealmResourceProvider;
 
 import javax.persistence.EntityManager;
 import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import java.io.Serializable;
 
 
 public class UserResourceProvider implements RealmResourceProvider {
@@ -78,6 +81,76 @@ public class UserResourceProvider implements RealmResourceProvider {
             passwordCredentialProvider.createCredential(realm,user,newModel);
         }else{
            throw new ForbiddenException("raw password is not correct");
+        }
+    }
+
+
+    // /auth/realms/buzz-sso/user-extend-api-credential/user-reset-pwd
+    /**
+     *  user reset password by raw password and new password
+     * @param authorization from header, accessToken
+     */
+    @POST
+    @NoCache
+    @Path("user-info")
+    @Produces(MediaType.APPLICATION_JSON)
+    public User userInfo(@HeaderParam("Authorization") String authorization){
+        checkRealmAdmin();
+        UserModel userModel = this.auth.getUser();
+        User user = new User();
+        user.setUserId(userModel.getId());
+        user.setOutUserId(userModel.getFirstAttribute("outUserId"));
+        user.setUserName(userModel.getUsername());
+        user.setEmail(userModel.getEmail());
+        user.setPhoneNumber(userModel.getFirstAttribute("phoneNumber"));
+        return user;
+    }
+
+    class User implements Serializable {
+       private String userId;
+       private String userName;
+       private String outUserId;
+       private String email;
+       private String phoneNumber;
+
+        public String getUserId() {
+            return userId;
+        }
+
+        public void setUserId(String userId) {
+            this.userId = userId;
+        }
+
+        public String getUserName() {
+            return userName;
+        }
+
+        public void setUserName(String userName) {
+            this.userName = userName;
+        }
+
+        public String getOutUserId() {
+            return outUserId;
+        }
+
+        public void setOutUserId(String outUserId) {
+            this.outUserId = outUserId;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
+        }
+
+        public String getPhoneNumber() {
+            return phoneNumber;
+        }
+
+        public void setPhoneNumber(String phoneNumber) {
+            this.phoneNumber = phoneNumber;
         }
     }
 
